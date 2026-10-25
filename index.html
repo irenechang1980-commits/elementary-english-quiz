@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Super Fun 7 英語小測驗</title>
+  <style>
+    :root { --navy:#173b5c; --blue:#2d82b7; --mint:#dff5ed; --yellow:#fff1b8; --ink:#183047; --wrong:#c54646; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:linear-gradient(135deg,#e6f5ff,#fff9df 55%,#e8f8ef); }
+    .wrap { max-width:880px; margin:auto; padding:34px 20px 54px; }
+    header { text-align:center; margin-bottom:24px; }
+    .tag { display:inline-block; background:var(--yellow); border-radius:99px; padding:7px 14px; font-weight:800; font-size:.9rem; }
+    h1 { font-size:clamp(2rem,6vw,3.5rem); color:var(--navy); margin:12px 0 8px; letter-spacing:.04em; }
+    header p { margin:0; font-size:1.08rem; }
+    .card { background:#fff; border-radius:24px; box-shadow:0 12px 30px #17405c1a; padding:clamp(22px,5vw,42px); }
+    .start { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .mode { border:3px solid #dcecf4; border-radius:20px; padding:24px 18px; background:#fff; text-align:left; color:var(--ink); cursor:pointer; transition:.2s; font:inherit; }
+    .mode:hover { transform:translateY(-4px); border-color:var(--blue); box-shadow:0 8px 18px #2d82b720; }
+    .mode .emoji { font-size:2.8rem; display:block; margin-bottom:10px; }
+    .mode strong { display:block; font-size:1.35rem; color:var(--navy); margin-bottom:6px; }
+    .mode small { line-height:1.6; }
+    .quiz { display:none; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:24px; font-weight:800; }
+    .progress { flex:1; height:12px; background:#eaf1f4; border-radius:10px; overflow:hidden; }
+    .progress i { display:block; height:100%; width:0; background:linear-gradient(90deg,#55c8a1,#2d82b7); transition:.3s; }
+    .question-type { display:inline-block; color:#24755e; font-weight:800; background:var(--mint); border-radius:8px; padding:5px 10px; font-size:.9rem; }
+    .question { font-size:clamp(1.35rem,4vw,1.8rem); margin:15px 0 24px; font-weight:800; line-height:1.6; color:var(--navy); }
+    .dialogue { background:#f2f8fb; border-left:5px solid var(--blue); border-radius:0 14px 14px 0; padding:15px 18px; line-height:1.9; font-size:1.12rem; margin-top:-8px; margin-bottom:24px; }
+    .choices { display:grid; gap:12px; }
+    .choice { width:100%; border:2px solid #d7e3e8; background:#fff; border-radius:14px; padding:14px 18px; text-align:left; color:var(--ink); font:700 1.05rem inherit; cursor:pointer; transition:.15s; }
+    .choice:hover:not(:disabled) { border-color:var(--blue); background:#f1f9fd; }
+    .choice.correct { background:#e2f7ed; border-color:#36a878; color:#166145; }
+    .choice.wrong { background:#fff0ef; border-color:#d76662; color:#9b3935; }
+    .choice:disabled { cursor:default; }
+    .fill-answer { width:100%; border:2px solid #d7e3e8; border-radius:14px; padding:14px 16px; color:var(--ink); font:700 1.1rem inherit; outline:none; }
+    .fill-answer:focus { border-color:var(--blue); box-shadow:0 0 0 4px #2d82b720; }
+    .check { margin-top:14px; background:var(--blue); color:#fff; border:0; border-radius:12px; padding:12px 20px; font:800 1rem inherit; cursor:pointer; }
+    .check:hover { background:var(--navy); }
+    .feedback { min-height:29px; margin:18px 0 0; font-weight:800; line-height:1.6; }
+    .feedback.ok { color:#18704e; } .feedback.no { color:var(--wrong); }
+    .next, .again { margin-top:16px; background:var(--navy); color:white; border:0; border-radius:12px; padding:13px 22px; font:800 1rem inherit; cursor:pointer; float:right; }
+    .next:hover,.again:hover { background:var(--blue); }
+    .result { display:none; text-align:center; }
+    .score { font-size:4.2rem; color:var(--blue); font-weight:900; margin:8px 0; }
+    .result p { font-size:1.15rem; line-height:1.7; }
+    .summary { max-width:460px; margin:18px auto; padding:16px; background:#f2f8fb; border-radius:14px; line-height:1.9; font-weight:700; }
+    .wrong-list { color:var(--wrong); }
+    .again { float:none; margin-top:8px; }
+    footer { text-align:center; font-size:.86rem; margin-top:22px; opacity:.7; }
+    @media (max-width:700px) { .start{grid-template-columns:1fr;} .wrap{padding-top:22px;} }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header><span class="tag">Lesson 1｜國家與國籍</span><h1>Super Fun 7 小測驗</h1><p>Where are you from? 一起練習國家單字與對話！</p></header>
+    <section class="card" id="home">
+      <div class="start">
+        <button class="mode" onclick="startQuiz('vocab')"><span class="emoji">🌍</span><strong>單字練習</strong><small>10 題選擇題：認識國家名稱與國旗。</small></button>
+        <button class="mode" onclick="startQuiz('dialogue')"><span class="emoji">💬</span><strong>對話練習</strong><small>10 題情境題：練習詢問來自哪裡。</small></button>
+        <button class="mode" onclick="startQuiz('fill')"><span class="emoji">✏️</span><strong>國家填空</strong><small>10 題拼寫題：自己輸入正確國名。</small></button>
+      </div>
+    </section>
+    <section class="card quiz" id="quiz">
+      <div class="topbar"><span id="counter"></span><div class="progress"><i id="bar"></i></div><span id="points">得分 0</span></div>
+      <span class="question-type" id="type"></span><div id="questionArea"></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="next" id="next" onclick="nextQuestion()" style="display:none">下一題 →</button><div style="clear:both"></div>
+    </section>
+    <section class="card result" id="result"><span style="font-size:3rem">🎉</span><h2>測驗完成！</h2><div class="score" id="finalScore"></div><div class="summary" id="summary"></div><p id="message"></p><button class="again" onclick="goHome()">再玩一次</button></section>
+    <footer>本練習題依 Super Fun 7 Lesson 1「國家與來自哪裡」的學習重點原創設計，供自我練習使用。</footer>
+  </main>
+  <script>
+    const vocab = [
+      ['單字：國家','Which word means「臺灣」？',['Thailand','Taiwan','Turkey','Japan'],1,'Taiwan 是「臺灣」。'],
+      ['單字：國家','Which country is「日本」？',['Japan','Korea','France','Australia'],0,'Japan 是「日本」。'],
+      ['單字：國家','「美國」的英文是什麼？',['the USA','the UK','Taiwan','Korea'],0,'the USA 是「美國」。'],
+      ['單字：國家','I am from _____. 我來自澳洲。',['France','Australia','Japan','the USA'],1,'Australia 是「澳洲」。'],
+      ['單字：國家','Which word means「法國」？',['France','French','from','friend'],0,'France 是「法國」。'],
+      ['單字：國家','She is from Korea. 她來自哪裡？',['Japan','Korea','Australia','the UK'],1,'句子中寫著 from Korea，答案是 Korea。'],
+      ['單字：國家','「英國」的英文是什麼？',['the USA','the UK','Australia','Taiwan'],1,'the UK 是「英國」。'],
+      ['單字：國家','Ken is from _____. 他來自日本。',['France','Japan','Korea','Taiwan'],1,'Japan 是「日本」。'],
+      ['單字：拼寫','Which spelling is correct?',['Australlia','Austrlia','Australia','Austalia'],2,'Australia 中有一個 r 和兩個 a。'],
+      ['單字：句意','"I’m from France." 的意思是什麼？',['我喜歡法國。','我去法國。','我來自法國。','我是法國人。'],2,'I’m from... 是「我來自……」。']
+    ];
+    const dialogue = [
+      ['情境對話','A: Where are you from?\nB: _____',['I’m from Taiwan.','I’m ten years old.','I’m a student.','It’s Taiwan.'],0,'詢問來自哪裡，回答用 I’m from + 國家。'],
+      ['情境對話','A: _____\nB: I’m from Australia.',['Where are you from?','What is your name?','How are you?','Who is she?'],0,'Where are you from? 是「你來自哪裡？」'],
+      ['情境對話','A: Is she from Japan?\nB: _____ She is from Japan.',['Yes, she is.','Yes, she does.','No, she isn’t.','No, she doesn’t.'],0,'be 動詞 is 的肯定回答用 Yes, she is.'],
+      ['情境對話','A: Is Ken from the USA?\nB: No, _____. He is from the UK.',['he isn’t','he doesn’t','he is','he don’t'],0,'否定 be 動詞的回答是 No, he isn’t.'],
+      ['情境對話','A: Where is Amy from?\nB: _____',['She is from France.','She from France.','She are from France.','I’m from France.'],0,'Amy 是女生，回答用 She is from...'],
+      ['情境對話','A: Are you from Korea?\nB: _____ I’m from Taiwan.',['No, I’m not.','No, I don’t.','No, you aren’t.','Yes, I am.'],0,'Are you...? 的否定回答用 No, I’m not.'],
+      ['情境對話','A: Is Mr. Bean from the UK?\nB: _____',['Yes, he is.','Yes, he does.','Yes, I am.','Yes, she is.'],0,'Mr. Bean 是男性，回答用 he。'],
+      ['情境對話','A: Hi! I’m Mia. I’m from Korea.\nB: Hi, Mia! _____',['I’m Leo. I’m from Taiwan.','She is from Taiwan.','Where is Taiwan?','Yes, I am.'],0,'介紹自己可以說 I’m + 名字，I’m from + 國家。'],
+      ['情境對話','A: Is she from France?\nB: _____ She is from Australia.',['No, she isn’t.','No, she doesn’t.','Yes, she is.','Yes, she does.'],0,'後句說來自澳洲，因此前句答案是否定。'],
+      ['情境對話','A: Where are they from?\nB: _____',['They’re from Japan.','They’re Japan.','They is from Japan.','It’s from Japan.'],0,'they 的回答用 They’re from...']
+    ];
+    const fill = [
+      ['國家填空','我來自臺灣。\nI’m from _____.','Taiwan','Taiwan 是「臺灣」。'],
+      ['國家填空','她來自日本。\nShe is from _____.','Japan','Japan 是「日本」。'],
+      ['國家填空','他來自韓國。\nHe is from _____.','Korea','Korea 是「韓國」。'],
+      ['國家填空','我來自法國。\nI’m from _____.','France','France 是「法國」。'],
+      ['國家填空','她來自澳洲。\nShe is from _____.','Australia','Australia 是「澳洲」。'],
+      ['國家填空','Ken 來自美國。\nKen is from _____.','the USA','the USA 是「美國」。'],
+      ['國家填空','Mr. Bean 來自英國。\nMr. Bean is from _____.','the UK','the UK 是「英國」。'],
+      ['國家填空','他們來自英國。\nThey’re from _____.','the UK','the UK 是「英國」。'],
+      ['國家填空','Amy 來自臺灣。\nAmy is from _____.','Taiwan','Taiwan 是「臺灣」。'],
+      ['國家填空','你來自美國嗎？\nAre you from _____?','the USA','the USA 是「美國」。']
+    ];
+    let questions=[], current=0, score=0, answered=false, wrongNumbers=[];
+    function startQuiz(kind){ questions=[...(kind==='vocab'?vocab:kind==='dialogue'?dialogue:fill)].sort(()=>Math.random()-.5); current=0;score=0;wrongNumbers=[]; document.getElementById('home').style.display='none';document.getElementById('result').style.display='none';document.getElementById('quiz').style.display='block'; showQuestion(); }
+    function showQuestion(){ answered=false; const q=questions[current], isFill=q[0]==='國家填空'; document.getElementById('counter').textContent=`第 ${current+1} / ${questions.length} 題`; document.getElementById('points').textContent=`得分 ${score}`; document.getElementById('bar').style.width=`${current/questions.length*100}%`; document.getElementById('type').textContent=q[0]; document.getElementById('questionArea').innerHTML=(q[0]==='情境對話'||isFill)?`<div class="dialogue">${q[1].replace(/\n/g,'<br>')}</div>`:`<div class="question">${q[1]}</div>`; const box=document.getElementById('choices');box.innerHTML=''; if(isFill){box.innerHTML='<input class="fill-answer" id="fillAnswer" aria-label="請輸入答案" placeholder="輸入英文答案" autocomplete="off"><button class="check" onclick="checkFill()">送出答案</button>'; document.getElementById('fillAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')checkFill()});document.getElementById('fillAnswer').focus();}else{q[2].forEach((option,i)=>{const b=document.createElement('button');b.className='choice';b.innerHTML=`${String.fromCharCode(65+i)}. ${option}`;b.onclick=()=>answer(i);box.appendChild(b)});} document.getElementById('feedback').textContent='';document.getElementById('feedback').className='feedback';document.getElementById('next').style.display='none'; }
+    function answer(i){if(answered)return;answered=true;const q=questions[current], buttons=[...document.querySelectorAll('.choice')], correct=i===q[3];buttons.forEach((b,n)=>{b.disabled=true;if(n===q[3])b.classList.add('correct');if(n===i&&!correct)b.classList.add('wrong')});if(correct){score++;document.getElementById('feedback').textContent='答對了！ '+q[4];document.getElementById('feedback').className='feedback ok'}else{wrongNumbers.push(current+1);document.getElementById('feedback').textContent='再想一想！ '+q[4];document.getElementById('feedback').className='feedback no'}document.getElementById('points').textContent=`得分 ${score}`;document.getElementById('next').textContent=current===questions.length-1?'看成績 →':'下一題 →';document.getElementById('next').style.display='block';}
+    function checkFill(){if(answered)return;const q=questions[current], input=document.getElementById('fillAnswer'), given=input.value.trim().toLowerCase(), correct=given===q[2].toLowerCase();if(!given){input.focus();return;}answered=true;input.disabled=true;document.querySelector('.check').disabled=true;if(correct){score++;input.style.borderColor='#36a878';document.getElementById('feedback').textContent='答對了！ '+q[3];document.getElementById('feedback').className='feedback ok';}else{wrongNumbers.push(current+1);input.style.borderColor='#d76662';document.getElementById('feedback').textContent=`正確答案：${q[2]}。${q[3]}`;document.getElementById('feedback').className='feedback no';}document.getElementById('points').textContent=`得分 ${score}`;document.getElementById('next').textContent=current===questions.length-1?'看成績 →':'下一題 →';document.getElementById('next').style.display='block';}
+    function nextQuestion(){current++;if(current<questions.length)showQuestion();else finish();}
+    function finish(){const total=questions.length, rate=Math.round(score/total*100);document.getElementById('quiz').style.display='none';document.getElementById('result').style.display='block';document.getElementById('finalScore').textContent=`${score} / ${total}`;document.getElementById('summary').innerHTML=`<div>答對：${score} 題　答錯：${total-score} 題　正確率：${rate}%</div>${wrongNumbers.length?`<div class="wrong-list">答錯題號：第 ${wrongNumbers.join('、')} 題</div>`:'<div style="color:#18704e">答錯題號：無，全部答對！</div>'}`;document.getElementById('message').textContent=score===10?'太厲害了！你是英語小高手！':score>=7?'表現很棒！再複習一下就更完美囉！':'完成挑戰很棒！建議再練習一次，加深記憶。';}
+    function goHome(){document.getElementById('result').style.display='none';document.getElementById('home').style.display='block';}
+  </script>
+</body>
+</html>
